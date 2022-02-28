@@ -62,13 +62,34 @@
       background: black;
       position: absolute;
       top: 50%;
+      transform-origin: 100%;   /* for rotating from the corner */
+      transition: all 0.05s;    
+      transition-timing-function: cubic-bezier(0.08, 2.73, 0.58, 1);    /* for ticking like transition */
+      transform: rotate(90deg);
     }
 
   </style>
 
   <script>
+    const secondHand = document.querySelector(".second-hand");
+    const minHand = document.querySelector(".min-hand");
+    const hourHand = document.querySelector(".hour-hand");
+    secondHand.style.height = `4px`;
+    minHand.style.height = `7px`;
+    hourHand.style.height = `9px`;  // making hour hand thickest
 
-
+    function setDate(){
+      const date = new Date();
+      const secondsDegree = (date.getSeconds() / 60) * 360 + 90;
+      if(secondsDegree==90)secondHand.style.transition = `all 0s`;  // avoiding glitch for (450->90 degree) transition
+      else secondHand.style.transition = `all 0.05s`;
+      secondHand.style.transform = `rotate(${secondsDegree}deg)`;
+      minHand.style.transform = `rotate(${(date.getMinutes() / 60) * 360 + 90}deg)`;
+      hourHand.style.transform = `rotate(${(date.getHours() / 12) * 360 + 90}deg)`;   // dividing by 12 for hour hand
+      console.log(date.getSeconds());
+    }
+    setDate();  // for correct time at the start
+    setInterval(setDate, 1000);   // setDate() will be called every 1000 ms
   </script>
 </body>
 </html>
